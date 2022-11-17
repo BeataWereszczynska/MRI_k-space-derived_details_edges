@@ -62,7 +62,7 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     elif threshold[0] == 'manual':
         im_bw = cv2.threshold(sum_of_images, threshold[1], 255, cv2.THRESH_BINARY)[1]
     elif threshold[0] == 'auto':
-        ret2,im_bw = cv2.threshold(sum_of_images,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        im_bw = cv2.threshold(sum_of_images,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
     else:
         print("Threshold options are: ('auto', ), ('manual', threshold value), ('adaptive', C value).")
         im_bw = np.zeros((sum_of_images.shape[0], sum_of_images.shape[1]))
