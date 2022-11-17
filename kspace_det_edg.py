@@ -3,6 +3,7 @@
 k-space based details/edges detection in MRI images from Agilent FID data.
 
 Created on Tue Nov 15 2022
+Last modified on Thu Nov 17 2022
 @author: Beata Wereszczyńska
 """
 import nmrglue as ng
