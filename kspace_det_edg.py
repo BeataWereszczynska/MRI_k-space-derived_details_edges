@@ -72,7 +72,6 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     # denoise the binary image (remove small objects)
     im_bw = morphology.remove_small_objects(im_bw != 0, min_size=3, in_place=True, connectivity=2)
     
-    
     # visualization
     plt.rcParams['figure.dpi'] = 1200
     plt.subplot(131)
@@ -91,7 +90,6 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     
     # return data
     return ft, sum_of_images, im_bw
-
 
 
 def main():
