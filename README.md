@@ -7,7 +7,6 @@ k-space based details/edges detection in MRI images from Agilent FID data.
 1. Python script kspace_det_edg.py.
 2. [COMING SOON] PDF file presenting:
 - short introduction to the topic,
-- input parameters and their meanings,
 - how the code works step by step,
 - sample results with commentary.
 3. Sample FID data in the sems_20190203_03.fid folder.
