@@ -3,7 +3,7 @@
 k-space based details/edges detection in MRI images from Agilent FID data.
 
 Created on Tue Nov 15 2022
-Last modified on Thu Nov 17 2022
+Last modified on Fri Nov 18 2022
 @author: Beata Wereszczyńska
 """
 import nmrglue as ng
@@ -37,36 +37,39 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     ft = np.fft.fftshift(ft)                # fixing problem with corner being center of the image
     ft = np.transpose(np.flip(ft, (1,0)))   # matching geometry with VnmrJ-calculated image (still a bit shifted)
     
-    # masking k-space and creating multi-image k-space-defined details/edges image
-    sum_of_images = np.ones(shape=(kspace.shape[0],kspace.shape[1]))
-    mask = np.ones(shape=(kspace.shape[0],kspace.shape[1]))
+    # masking k-space and creating an image of k-space-defined details/edges
+    sum_of_masked = np.ones(shape=kspace.shape)
+    mask = np.ones(shape=kspace.shape)
     
     for value in range(radius_min, radius_max+1, radius_step):
         cv2.circle(img=mask, center=(int(kspace.shape[0]/2),int(kspace.shape[1]/2)), 
                    radius = value, color =(0,0,0), thickness=-1)
         masked_k = np.multiply(kspace,mask)
-        ft2 = np.fft.fft2(masked_k)
-        ft2 = np.fft.fftshift(ft2)
-        ft2 = np.transpose(np.flip(ft2, (1,0)))
-        sum_of_images = sum_of_images + ft2
+        sum_of_masked = sum_of_masked + masked_k
     
-    del value, ft2, mask, masked_k, kspace, radius_min, radius_max, radius_step
+    del value, mask, masked_k, kspace, radius_min, radius_max, radius_step
+    
+    ft2 = np.fft.fft2(sum_of_masked)
+    ft2 = np.fft.fftshift(ft2)
+    ft2 = np.transpose(np.flip(ft2, (1,0)))
+    
+    del sum_of_masked
     
     # normalizing the image of k-space-defined details/edges (0-255)
-    sum_of_images = cv2.normalize(abs(sum_of_images), None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+    ft2 = cv2.normalize(abs(ft2), None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     
     # k-space-defined details/edges to binary image
     if threshold[0] == 'adaptive':
-        im_bw = cv2.adaptiveThreshold(sum_of_images, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                      cv2.THRESH_BINARY,int(((sum_of_images.shape[0]*sum_of_images.shape[1])/4)+1),
+        im_bw = cv2.adaptiveThreshold(ft2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                      cv2.THRESH_BINARY,int(((ft2.shape[0]*ft2.shape[1])/4)+1),
                                       threshold[1])
     elif threshold[0] == 'manual':
-        im_bw = cv2.threshold(sum_of_images, threshold[1], 255, cv2.THRESH_BINARY)[1]
+        im_bw = cv2.threshold(ft2, threshold[1], 255, cv2.THRESH_BINARY)[1]
     elif threshold[0] == 'auto':
-        im_bw = cv2.threshold(sum_of_images,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+        im_bw = cv2.threshold(ft2,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
     else:
         print("Threshold options are: ('auto', ), ('manual', threshold value), ('adaptive', C value).")
-        im_bw = np.zeros((sum_of_images.shape[0], sum_of_images.shape[1]))
+        im_bw = np.zeros(ft2.shape)
     
     del threshold
     
@@ -81,7 +84,7 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     plt.subplot(132)
     plt.title('k-space-derived details/edges',
               fontdict = {'fontsize' : 8}), plt.axis('off')
-    plt.imshow(sum_of_images, cmap=plt.get_cmap('gray'))
+    plt.imshow(ft2, cmap=plt.get_cmap('gray'))
     plt.subplot(133)
     plt.title('binary image of details/edges',
               fontdict = {'fontsize' : 8}), plt.axis('off')
@@ -90,7 +93,7 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     plt.show()
     
     # return data
-    return ft, sum_of_images, im_bw
+    return ft, ft2, im_bw
 
 
 def main():
@@ -103,15 +106,15 @@ def main():
     # threshold options: ('auto', ), ('manual', threshold value), ('adaptive', C value)
         
     # running calculations and retrieving the results
-    ft, sum_of_images, im_bw = kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, threshold)
+    ft, ft2, im_bw = kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, threshold)
     
     # creating global variables to be available after the run completion
     global MRI_complex_img
     MRI_complex_img = ft
     global details_img
-    details_img = sum_of_images
-    global binary
-    binary = im_bw
+    details_img = ft2
+    global binary_details
+    binary_details = im_bw
     
 
 if __name__ == "__main__":
