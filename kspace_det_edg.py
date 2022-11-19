@@ -50,7 +50,7 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, deno
         masked_k = np.multiply(kspace,mask)
         sum_of_masked = sum_of_masked + masked_k
     
-    # denoising
+    # k-space based denoising
     mask_denoise = np.zeros(shape=kspace.shape)
     if denoise[0] == 1:
         mask = np.zeros(shape=kspace.shape)
