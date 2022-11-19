@@ -1,7 +1,7 @@
 # MRI_k-space-derived_details_edges
 k-space based details/edges detection in MRI images with optional k-space based denoising and detail control (on the example of Agilent FID data).
 
-![Figure](Figure.png)
+![Figure](Fig2.png)
 
 ## The repository contains:
 1. Python script kspace_det_edg.py.
@@ -10,7 +10,7 @@ k-space based details/edges detection in MRI images with optional k-space based 
 - how the code works step by step,
 - sample results with commentary.
 3. Sample FID data in the sems_20190203_03.fid folder.
-4. Sample results illustration in Figure1.png.
+4. Sample results illustration in Fig2.png.
 
 ## Literature reference (for collection of the sample data)
 Beata Wereszczyńska, Alcohol-fixed specimens for high-contrast post-mortem MRI, Forensic Imaging, Volume 25, 2021, 200449, ISSN 2666-2256, https://doi.org/10.1016/j.fri.2021.200449. (https://www.sciencedirect.com/science/article/pii/S2666225621000208)
