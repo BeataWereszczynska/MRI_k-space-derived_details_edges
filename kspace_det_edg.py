@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-k-space based details/edges detection in MRI images from Agilent FID data.
+k-space based details/edges detection in MRI images from Agilent FID data
+with k-space based denoising.
 
 Created on Tue Nov 15 2022
-Last modified on Fri Nov 18 2022
+Last modified Sat Nov 19 2022
+
 @author: Beata Wereszczyńska
 """
 import nmrglue as ng
@@ -12,16 +14,17 @@ import matplotlib.pyplot as plt
 import cv2
 from skimage import morphology
 
-def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, threshold):
+def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, denoise, threshold):
     """
     k-space based details/edges detection in MRI images from Agilent FID data. 
     Input: 
         .fid folder location: path [str],
         selected slice number: picked_slice [int],
-        smalest radius for k-space masking: radius_min [int],
-        largest radius for k-space masking: radius_max [int],
+        smalest radius for k-space masking in pixels: radius_min [int],
+        largest radius for k-space masking in pixels: radius_max [int],
         step betwen the two above values: radius_step [int],
-        threshold option: threshold [tuple (type, value)].
+        denoising option: denoise [tuple (1=on 0=off [bool], denoising radius in pixels [int])]
+        threshold option: threshold [tuple (type [str], value [int])].
     Threshold options are: ('auto', ), ('manual', threshold value), ('adaptive', C value)
     """
     
@@ -47,8 +50,22 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
         masked_k = np.multiply(kspace,mask)
         sum_of_masked = sum_of_masked + masked_k
     
-    del value, mask, masked_k, kspace, radius_min, radius_max, radius_step
+    # denoising
+    mask_denoise = np.zeros(shape=kspace.shape)
+    if denoise[0] == 1:
+        mask = np.zeros(shape=kspace.shape)
+        
+        for value in range(denoise[1], denoise[1]+15, 2):
+            cv2.circle(img=mask, center=(int(kspace.shape[0]/2),int(kspace.shape[1]/2)), 
+                       radius = value, color =(1,0,0), thickness=-1)
+
+            mask_denoise = mask_denoise + mask
+        
+        sum_of_masked = np.multiply(sum_of_masked,mask_denoise)
     
+    del value, mask, masked_k, kspace, radius_min, radius_max, radius_step, mask_denoise
+    
+    # reconstructing the image of k-space-defined details/edges
     ft2 = np.fft.fft2(sum_of_masked)
     ft2 = np.fft.fftshift(ft2)
     ft2 = np.transpose(np.flip(ft2, (1,0)))
@@ -61,7 +78,7 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
     # k-space-defined details/edges to binary image
     if threshold[0] == 'adaptive':
         im_bw = cv2.adaptiveThreshold(ft2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                      cv2.THRESH_BINARY,int(((ft2.shape[0]*ft2.shape[1])/4)+1),
+                                      cv2.THRESH_BINARY,int(((ft2.shape[0]*ft2.shape[1])/16)+1),
                                       threshold[1])
     elif threshold[0] == 'manual':
         im_bw = cv2.threshold(ft2, threshold[1], 255, cv2.THRESH_BINARY)[1]
@@ -99,14 +116,15 @@ def kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, thre
 def main():
     path = 'sems_20190203_03.fid'         # .fid folder location [str]
     picked_slice = 4                      # selected slice number [int]
-    radius_min = 4                        # smalest radius for k-space masking [int]
-    radius_max = 45                       # largest radius for k-space masking [int]
+    radius_min = 5                        # smalest radius for k-space masking [int]
+    radius_max = 55                       # largest radius for k-space masking [int]
     radius_step = 1                       # step betwen the two above values [int]
-    threshold = ('auto', )                # threshold option [tuple (type, value)]
+    denoise = (1, 180)                    # denoising option [tuple ([bool], denoising radius [int])]
+    threshold = ('manual', 38)            # threshold option [tuple (type, value)]
     # threshold options: ('auto', ), ('manual', threshold value), ('adaptive', C value)
         
     # running calculations and retrieving the results
-    ft, ft2, im_bw = kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, threshold)
+    ft, ft2, im_bw = kspace_det_edg(path, picked_slice, radius_min, radius_max, radius_step, denoise, threshold)
     
     # creating global variables to be available after the run completion
     global MRI_complex_img
