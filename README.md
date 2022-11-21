@@ -1,5 +1,5 @@
 # MRI_k-space-derived_details_edges
-k-space based details/edges detection in MRI images with optional k-space based denoising (on the example of Agilent FID data).
+k-space based details/edges detection in MRI images with optional k-space based denoising and detail control (on the example of Agilent FID data).
 
 ![Figure](Fig2.png)
 
