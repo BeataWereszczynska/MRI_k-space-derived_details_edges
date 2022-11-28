@@ -3,11 +3,11 @@ k-space based details/edges detection in MRI images with optional k-space based 
 
 ![FigureA](FigureA.png)
 
-*<div align="center">Figure A. Sample results: detail control and simple thresholding.</div>*
+*<div align="center">Figure A. Sample results for details/edges detection with detail control and simple thresholding.</div>*
 
 ![FigureB](FigureB.png)
 
-*<div align="center">Figure B. Sample results: denoising, detail control and adaptive thresholding.</div>*
+*<div align="center">Figure B. Sample results for details/edges detection with denoising, detail control and adaptive thresholding.</div>*
 
 ## The repository contains:
 1. Python script kspace_det_edg.py.
