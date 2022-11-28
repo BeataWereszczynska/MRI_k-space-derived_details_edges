@@ -2,7 +2,9 @@
 k-space based details/edges detection in MRI images with optional k-space based denoising and detail control and three binarization methods to choose from (on the example of Agilent FID data). 
 
 ![FigureA](FigureA.png)
+Figure A. Sample results: moderate denoising and detail control with simple thresholding.
 ![FigureB](FigureB.png)
+Figure B. Sample results: substantial denoising and detail control with adaptive thresholding.
 
 ## The repository contains:
 1. Python script kspace_det_edg.py.
