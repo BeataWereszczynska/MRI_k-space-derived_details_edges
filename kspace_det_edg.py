@@ -190,7 +190,7 @@ def main():
     detail_contr = 1                      # 1=on 0=off [bool]
     detail_r = 200                        # radius for graduate masking in pixels [int]
     
-    # detecting details/edges parameters
+    # details/edges detection parameters
     radius_min = 4                        # smalest radius for k-space masking [int]
     radius_max = 40                       # largest radius for k-space masking [int]
     radius_step = 1                       # step betwen the two above values [int]
