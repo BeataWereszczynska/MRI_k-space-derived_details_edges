@@ -136,8 +136,7 @@ def kspace_det_edg(kspace, radius_min, radius_max, radius_step, threshold):
     # k-space-defined details/edges to binary image
     if threshold[0] == 'adaptive':
         im_bw = cv2.adaptiveThreshold(ft2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                      cv2.THRESH_BINARY,int(((ft2.shape[0]*ft2.shape[1])/16)+1),
-                                      threshold[1])
+                                      cv2.THRESH_BINARY, 31, threshold[1])
     elif threshold[0] == 'manual':
         im_bw = cv2.threshold(ft2, threshold[1], 255, cv2.THRESH_BINARY)[1]
     elif threshold[0] == 'auto':
