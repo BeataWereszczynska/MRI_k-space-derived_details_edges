@@ -4,7 +4,7 @@ k-space based details/edges detection in MRI images with optional k-space based
 denoising and detail control (for Agilent FID data).
 
 Created on Tue Nov 15 2022
-Last modified on Sun Nov 27 2022
+Last modified on Wed Nov 30 2022
 
 @author: Beata Wereszczyńska
 """
@@ -183,18 +183,18 @@ def main():
     
     # denoising parameters
     denoise = 1                           # 1=on 0=off [bool]
-    weight_power = 0.12                   # exponent in the signal weighting equation [float]
+    weight_power = 0.02                   # exponent in the signal weighting equation [float]
     contrast = 0                          # restoring contrast: 1=on 0=off [bool]
     
     # detail control parameters
-    detail_contr = 0                      # 1=on 0=off [bool]
-    detail_r = 180          # 110, 180    # radius for graduate masking in pixels [int]
+    detail_contr = 1                      # 1=on 0=off [bool]
+    detail_r = 200                        # radius for graduate masking in pixels [int]
     
     # detecting details/edges parameters
-    radius_min = 5                        # smalest radius for k-space masking [int]
-    radius_max = 55                       # largest radius for k-space masking [int]
+    radius_min = 4                        # smalest radius for k-space masking [int]
+    radius_max = 40                       # largest radius for k-space masking [int]
     radius_step = 1                       # step betwen the two above values [int]
-    threshold = ('manual', 36)            # threshold option [tuple (type, value)]
+    threshold = ('adaptive', -18)         # threshold option [tuple (type, value)]
     # threshold options: ('auto', ), ('manual', threshold value), ('adaptive', C value)
     
     # import
