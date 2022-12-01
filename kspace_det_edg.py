@@ -208,12 +208,12 @@ def main():
         kspace = wght_msk_kspace(kspace, weight_power, contrast)
     del weight_power, contrast, denoise
     
-    #detail control
+    # detail control
     if detail_contr:
         kspace = grad_mask_kspace(kspace, detail_r)
     del detail_r, detail_contr
     
-    # reconstructing the image of details/edges and creating binary image
+    # creating the image of details/edges and its binary version
     ft2, im_bw = kspace_det_edg(kspace, radius_min, radius_max, radius_step, threshold)
     del kspace
     
