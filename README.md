@@ -13,7 +13,7 @@ k-space based details/edges detection in MRI images with optional k-space based 
 
 ## The repository contains:
 1. Python script kspace_det_edg.py.
-2. [COMING SOON] PDF file presenting:
+2. Description.pdf presenting:
 - short introduction to the topic,
 - how the code works step by step,
 - sample results with commentary.
