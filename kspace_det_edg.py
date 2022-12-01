@@ -4,7 +4,7 @@ k-space based details/edges detection in MRI images with optional k-space based
 denoising and detail control (for Agilent FID data).
 
 Created on Tue Nov 15 2022
-Last modified on Wed Nov 30 2022
+Last modified on Thu Dec  1 2022
 
 @author: Beata Wereszczyńska
 """
@@ -204,12 +204,12 @@ def main():
     ft1 = FFT_2D(kspace)
     
     # denoising
-    if denoise == 1:
+    if denoise:
         kspace = wght_msk_kspace(kspace, weight_power, contrast)
     del weight_power, contrast, denoise
     
     #detail control
-    if detail_contr == 1:
+    if detail_contr:
         kspace = grad_mask_kspace(kspace, detail_r)
     del detail_r, detail_contr
     
